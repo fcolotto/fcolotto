@@ -54,7 +54,7 @@ async function fetchOrderById(orderId) {
 
   if (response.status === 401 || response.status === 403) {
     const error = new Error("Tienda Nube token lacks orders permissions");
-    error.statusCode = response.status;
+    error.statusCode = 403;
     error.code = "tn_orders_forbidden";
     throw error;
   }
