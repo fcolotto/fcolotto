@@ -31,6 +31,45 @@ async function fetchProducts() {
   return response.json();
 }
 
+async function fetchOrderById(orderId) {
+  const storeId = process.env.TN_STORE_ID;
+  const accessToken = process.env.TN_ACCESS_TOKEN;
+  const userAgent = process.env.TN_USER_AGENT;
+
+  if (!storeId || !accessToken || !userAgent) {
+    const error = new Error("Tienda Nube credentials are not configured");
+    error.statusCode = 500;
+    error.code = "tn_not_configured";
+    throw error;
+  }
+
+  const url = `${BASE_URL}/${storeId}/orders/${orderId}`;
+
+  const response = await fetch(url, {
+    headers: {
+      "Authentication": `bearer ${accessToken}`,
+      "User-Agent": userAgent
+    }
+  });
+
+  if (response.status === 401 || response.status === 403) {
+    const error = new Error("Tienda Nube token lacks orders permissions");
+    error.statusCode = response.status;
+    error.code = "tn_orders_forbidden";
+    throw error;
+  }
+
+  if (!response.ok) {
+    const error = new Error(`Tienda Nube request failed with status ${response.status}`);
+    error.statusCode = 500;
+    error.code = "tn_request_failed";
+    throw error;
+  }
+
+  return response.json();
+}
+
 module.exports = {
-  fetchProducts
+  fetchProducts,
+  fetchOrderById
 };

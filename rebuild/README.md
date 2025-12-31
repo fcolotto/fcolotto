@@ -94,3 +94,27 @@ Errores comunes:
 - Sin `x-api-key` o incorrecta → `401`.
 - Sin `q` → `400`.
 - Error con Tienda Nube → `500` o `502`.
+
+### Consultar pedido por ID
+
+```bash
+curl "http://localhost:3000/order?id=12345" \
+  -H "x-api-key: TU_API_KEY"
+```
+
+Respuesta exitosa:
+
+```json
+{
+  "ok": true,
+  "order": {
+    "id": 12345,
+    "number": "000123",
+    "status": "paid",
+    "created_at": "2024-05-22T12:34:56Z",
+    "total": "2599.00",
+    "shipping_tracking_code": "TRACK123",
+    "shipping_tracking_url": "https://tracking.example.com/TRACK123"
+  }
+}
+```
